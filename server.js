@@ -53,13 +53,11 @@ app.get("/files", async (req, res) => {
 // @route GET /files/:filename
 // @desc  Display single file object
 app.get("/files/:id", async (req, res) => {
-  const id = "Images/" + req.params.id;
+  const id = req.params.id;
   console.log(id);
-  cloudinary.v2.search
-    .expression({ public_id: id })
-    .execute(function(error, result) {
-      console.log(result);
-    });
+  cloudinary.v2.api.resources_by_ids(`Image/{id}`, function(error, result) {
+    console.log(result);
+  });
 });
 
 const PORT = 5000;
