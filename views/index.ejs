@@ -14,18 +14,22 @@
       img {
         width: 100%;
       }
+      .navbar-brand {
+        width: 100%;
+        text-align: center;
+      }
     </style>
     <title>Cloudinary Upload</title>
   </head>
 
   <body>
-    <nav class="navbar sticky-top navbar-light bg-light">
-      <a class="navbar-brand" href="#">Cloudinary File Uploads</a>
+    <nav class="navbar sticky-top navbar-dark bg-primary">
+      <a class="navbar-brand" href="#">Cloudinary</a>
     </nav>
     <div class="container">
       <div class="row">
         <div class="col-md-6 m-auto">
-          <h3 class="text-center display-4 my-4">Cloudinary File Uploads</h3>
+          <h5 class="text-center display-4 my-4">File Uploads</h5>
 
           <form action="/uploads" method="POST" enctype="multipart/form-data">
             <div class="input mb-3">
@@ -52,7 +56,6 @@
               class="btn btn-primary btn-block"
             />
           </form>
-
           <hr />
         </div>
       </div>
