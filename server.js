@@ -1,8 +1,11 @@
 const express = require("express");
 const app = express();
+const hbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const upload = require("./handlers/multer");
+const mongoose = require("mongoose");
 const cloudinary = require("cloudinary");
+const path = require('path');
 
 require("dotenv").config();
 require("./handlers/cloudinary");
@@ -10,45 +13,30 @@ require("./handlers/cloudinary");
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.set("view engine", "ejs");
+
+app.engine("handlebars", hbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+//Static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // @route GET /
 // @desc Loads form
-
-app.get("/", async (req, res) => {
-  const images = await cloudinary.v2.api.resources({
-    type: "upload",
-    prefix: "image"
-  });
-  // Check if files
-  if (!images || images.length === 0) {
-    res.render("index", { images: false });
-  } else {
-    images.resources.map(image => {
-      if (
-        image.format === "jpg" ||
-        image.format === "png" ||
-        image.format === "jpeg"
-      ) {
-        image.isImage = true;
-      } else {
-        image.isImage = false;
-      }
-    });
-    res.render("index", { images });
-  }
+app.get("/", (req, res) => {
+  res.render("index");
 });
 
 // @route POST /upload
 // @desc  Uploads file to Cloudinary
 app.post("/uploads", upload.single("image"), async (req, res) => {
   const result = await cloudinary.v2.uploader.upload(req.file.path);
-  // res.send(result);
+  res.send(result);
+  res.json(result);
   res.redirect("/");
   console.log(result);
 });
 
-// @route GET /files - Api
+// @route GET /api/files - Api
 // @desc  Display all files in JSON
 app.get("/files", async (req, res) => {
   const images = await cloudinary.v2.api.resources({
@@ -63,41 +51,58 @@ app.get("/files", async (req, res) => {
   }
 
   // Files exist
-  return res.json(images);
-  //console.log(images);
-});
+  res.render("files", {
+    images: images
 
-// @route GET /files/:filename
-// @desc  Display single file object
-app.get("/files/:id", async (req, res) => {
-  const id = req.params.id;
-  await cloudinary.v2.api.resources_by_ids(`Image/${id}`, (err, image) => {
-    // Check if file
-    if (!image || image.length === 0) {
-      return res.status(404).json({
-        err: "No image exists"
-      });
-    }
-    // File exists
-    return res.json(image);
-    //console.log(result);
+    // return res.json(images);
+    //console.log(images);
   });
+})
+
+// @route GET /api/files - Api
+// @desc  Display all files in JSON
+app.get("/api/files", async (req, res) => {
+  const images = await cloudinary.v2.api.resources({
+    type: "upload",
+    prefix: "image"
+  });
+  // Check if files
+  if (!images || images.length === 0) {
+    return res.status(404).json({
+      err: "No files exist"
+    });
+  }
+
+  // Files exist
+  return res.json(images);
+  // console.log(images);
+
+})
+
+// @route GET /files
+// @desc  Get all files from Cloudinary
+app.post("/files", upload.single("image"), async (req, res) => {
+  const result = await cloudinary.v2.uploader.upload(req.file.path);
+  res.send(result);
+  res.json(result);
+  res.redirect("/");
+  console.log(result);
 });
 
 // @route DELETE /files/:id
-// @desc  Delete file
-app.delete("/files/:id", (req, res) => {
-  const id = req.params.id;
-  cloudinary.v2.uploader.destroy(`Image/${id}`, (err, result) => {
-    if (err) {
-      return res.status(404).json({ err: err });
-    }
+// @desc  Get all files from Cloudinary
+app.delete("/files", (req, res) => {
 
-    res.redirect("/");
-  });
+  let id = req.body.id
+  console.log(id)
+
+  cloudinary.v2.api.delete_resources([id],
+    function (error, result) { console.log(result); });
+
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 3001;
+
 app.listen(PORT, () => {
-  console.log(`Server is running ${PORT}`);
-});
+  console.log(`Server is running ${PORT}`)
+})
