@@ -13,8 +13,7 @@
                 {{#each images.resources}}
                 <tr id={{public_id}} key={{url}}>
                     <td scope="row" onclick="displayImageInModal()" id={{public_id}}>
-                        <img class="dropdown-toggle rounded" src={{url}}
-                            style="object-fit:none; object-position: center; width: 40px; height: 40px; margin-bottom: 1rem;"
+                        <img class="dropdown-toggle rounded" src={{url}} style="object-fit:none; object-position: center; width: 40px; height: 40px; margin-bottom: 1rem;"
                             alt="home" />
                     </td>
                     <td onclick="displayImageInModal()" id={{public_id}} key={{url}}>{{created_at}}</td>
@@ -40,8 +39,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <img id="modalImage" class="dropdown-toggle rounded" src={{url}}
-                    style="object-fit:none; object-position: center; width: 100%; height: 100%; margin-bottom: 1rem;"
+                <img id="modalImage" class="dropdown-toggle rounded" src={{url}} style="object-fit:none; object-position: center; width: 100%; height: 100%; margin-bottom: 1rem;"
                     alt="image" />
             </div>
             <div class="modal-footer" id={{public_id}}>
@@ -88,3 +86,16 @@
             .catch(err => console.log(err))
     }
 </script>
+
+
+cloudinary.v2.uploader.upload(req.files.image.path,
+{ width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation:'manual' },
+function(err, result) {
+console.log(result);
+var post = new Model({
+title: req.body.title,
+description: req.body.description,
+created_at: new Date(),
+image: result.url,
+image_id: result.public_id
+});

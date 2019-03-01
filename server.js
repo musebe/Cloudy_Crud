@@ -103,3 +103,16 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running ${PORT}`);
 });
+
+
+cloudinary.v2.uploader.upload(req.files.image.path,
+  { width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation: 'manual' },
+  function (err, result) {
+    console.log(result);
+    var post = new Model({
+      title: req.body.title,
+      description: req.body.description,
+      created_at: new Date(),
+      image: result.url,
+      image_id: result.public_id
+    });
