@@ -1,3 +1,19 @@
+<div class="d-flex mt-1 pt-3">
+    <div>
+        {{#each images.resources}}
+        <div class='col-sm-4 d-inline-flex pb-4' style='width: auto'>
+            <div class="card mx-auto">
+                <img class="card-img-top" src={{url}}
+                    style="object-fit:none; object-position: center; width:300px; height: 300pc; max-height: 300px; max-width: 300px margin-bottom: 1rem;"
+                    alt="home" />
+                <div class="card-body">
+                    <p class="card-text"><b style='font-weight: 600'>Created At:</b><em style='font-weight: 100'>
+                            {{created_at}}</em></p>
+                </div>
+                <p class="card-title">&nbsp;
+                    <i id={{public_id}} onclick='deleteImage()' class="fa fa-close pull-right mr-3"></i>
+                </p>
+
 <div class="row">
     <div class="col-md-10 mx-auto">
         <h3 class="text-center display-4 my-4">All Cloudinary Files</h3>
@@ -47,40 +63,20 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
+        {{else}}
+        <p>No images listed</p>
+        {{/each}}
     </div>
 </div>
 
 <script>
-    let imageClickedId;
-
-    function displayImageInModal() {
-        let imageDisplayModal = document.getElementById('imageDisplayModal')
-        const imageClickedURL = event.target.parentNode
-        imageClickedId = imageClickedURL.id
-
-        $("#imageDisplayModal").modal('show');
-        modalImage = document.getElementById('modalImage')
-        modalImage.src = imageClickedURL.getAttribute('key')
-    }
-
-    function deleteImageFromModal() {
-        fetch(`/files`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: imageClickedId })
-        })
-            .then(location.reload())
-            .catch(err => console.log(err))
-    }
-
-
-    function deleteImageFromTable() {
-        const imageClickedId = event.target.parentNode.id
+    deleteImage = () => {
+        const imageClickedID = event.target.id
 
         fetch(`/files`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: imageClickedId })
+            body: JSON.stringify({ id: imageClickedID })
         })
             .then(location.reload())
             .catch(err => console.log(err))
