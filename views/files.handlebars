@@ -13,6 +13,54 @@
                 <p class="card-title">&nbsp;
                     <i id={{public_id}} onclick='deleteImage()' class="fa fa-close pull-right mr-3"></i>
                 </p>
+
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h3 class="text-center display-4 my-4">All Cloudinary Files</h3>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each images.resources}}
+                <tr id={{public_id}} key={{url}}>
+                    <td scope="row" onclick="displayImageInModal()" id={{public_id}}>
+                        <img class="dropdown-toggle rounded" src={{url}} style="object-fit:none; object-position: center; width: 40px; height: 40px; margin-bottom: 1rem;"
+                            alt="home" />
+                    </td>
+                    <td onclick="displayImageInModal()" id={{public_id}} key={{url}}>{{created_at}}</td>
+                    <td id={{public_id}}><i onclick="deleteImageFromTable()" class="fa fa-close"></i></td>
+                </tr>
+                {{else}}
+                <p>No images listed</p>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<!-- Image Display Modal -->
+<div class="modal" id='imageDisplayModal'>
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" class="dropdown-toggle rounded" src={{url}} style="object-fit:none; object-position: center; width: 100%; height: 100%; margin-bottom: 1rem;"
+                    alt="image" />
+            </div>
+            <div class="modal-footer" id={{public_id}}>
+                <button type="button" class="btn btn-danger" onclick="deleteImageFromModal()">Delete</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
         {{else}}
@@ -34,3 +82,16 @@
             .catch(err => console.log(err))
     }
 </script>
+
+
+cloudinary.v2.uploader.upload(req.files.image.path,
+{ width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation:'manual' },
+function(err, result) {
+console.log(result);
+var post = new Model({
+title: req.body.title,
+description: req.body.description,
+created_at: new Date(),
+image: result.url,
+image_id: result.public_id
+});

@@ -3,9 +3,8 @@ const app = express();
 const hbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const upload = require("./handlers/multer");
-const mongoose = require("mongoose");
 const cloudinary = require("cloudinary");
-const path = require('path');
+const path = require("path");
 
 require("dotenv").config();
 require("./handlers/cloudinary");
@@ -18,7 +17,7 @@ app.engine("handlebars", hbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 //Static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 // @route GET /
 // @desc Loads form
@@ -55,7 +54,7 @@ app.get("/files", async (req, res) => {
   res.render("files", {
     images: images
   });
-})
+});
 
 // @route GET /api/files - Api
 // @desc  Display all files in JSON
@@ -74,8 +73,7 @@ app.get("/api/files", async (req, res) => {
   // Files exist
   return res.json(images);
   // console.log(images);
-
-})
+});
 
 // @route GET /files
 // @desc  Get all files from Cloudinary
@@ -90,17 +88,29 @@ app.post("/files", upload.single("image"), async (req, res) => {
 // @route DELETE /files/:id
 // @desc  Get all files from Cloudinary
 app.delete("/files", (req, res) => {
+  let id = req.body.id;
+  console.log(id);
 
-  let id = req.body.id
-  console.log(id)
-
-  cloudinary.v2.api.delete_resources([id],
-    function (error, result) { console.log(result); });
-
+  cloudinary.v2.api.delete_resources([id], function(error, result) {
+    console.log(result);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`Server is running ${PORT}`)
-})
+  console.log(`Server is running ${PORT}`);
+});
+
+
+cloudinary.v2.uploader.upload(req.files.image.path,
+  { width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation: 'manual' },
+  function (err, result) {
+    console.log(result);
+    var post = new Model({
+      title: req.body.title,
+      description: req.body.description,
+      created_at: new Date(),
+      image: result.url,
+      image_id: result.public_id
+    });
