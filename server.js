@@ -25,16 +25,18 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-
 // @route POST /upload
 // @desc  Uploads file to Cloudinary
 app.post("/uploads", upload.single("image"), async (req, res) => {
   const result = await cloudinary.v2.uploader.upload(req.file.path, {
-    width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation: 'manual'
-  })
-  res.redirect("/");
+    width: 300,
+    height: 300,
+    crop: "limit",
+    tags: req.body.tags,
+    moderation: "manual"
+  });
+  res.redirect("/files");
 });
-
 
 // @route GET /api/files - Api
 // @desc  Display all files in JSON
@@ -91,7 +93,7 @@ app.delete("/files", (req, res) => {
   let id = req.body.id;
   console.log(id);
 
-  cloudinary.v2.api.delete_resources([id], function (error, result) {
+  cloudinary.v2.api.delete_resources([id], function(error, result) {
     console.log(result);
   });
 });
