@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const upload = require("./handlers/multer");
 const cloudinary = require("cloudinary");
 const path = require("path");
-const moment = require("moment")
+const moment = require("moment");
 
 require("dotenv").config();
 require("./handlers/cloudinary");
@@ -15,11 +15,11 @@ const hbs = expbs.create({
 
   //helpers
   helpers: {
-    renderDateFormat: function (time) {
-      return moment(time).format('MMMM Do YYYY, h:mm:ss a')
+    renderDateFormat: function(time) {
+      return moment(time).format("MMMM Do YYYY");
     }
   }
-})
+});
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,11 +43,14 @@ app.get("/", (req, res) => {
 // @desc  Uploads file to Cloudinary
 app.post("/uploads", upload.single("image"), async (req, res) => {
   const result = await cloudinary.v2.uploader.upload(req.file.path, {
-    width: 300, height: 300, crop: "limit", tags: req.body.tags, moderation: 'manual'
-  })
+    width: 300,
+    height: 300,
+    crop: "limit",
+    tags: req.body.tags,
+    moderation: "manual"
+  });
   res.redirect("/");
 });
-
 
 // @route GET /files
 // @desc  Display all files
@@ -103,7 +106,7 @@ app.delete("/files", (req, res) => {
   let id = req.body.id;
   console.log(id);
 
-  cloudinary.v2.api.delete_resources([id], function (error, result) {
+  cloudinary.v2.api.delete_resources([id], function(error, result) {
     console.log(result);
   });
 });
