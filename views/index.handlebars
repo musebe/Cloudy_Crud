@@ -22,8 +22,9 @@
     cloudinary.openUploadWidget({
       cloud_name: 'hackit-africa',
       upload_preset: 'vks7squm',
-      max_mage_width: 300,
+      max_image_width: 300,
       max_image_height: 300,
+      crop: 'limit'
     },
       function (error, result) {
         console.log(error, result)
