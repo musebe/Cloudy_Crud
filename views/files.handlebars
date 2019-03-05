@@ -8,7 +8,7 @@
                     alt="home" />
                 <div class="card-body">
                     <p class="card-text"><b style='font-weight: 600'>Created At:</b><em style='font-weight: 100'>
-                            {{created_at}}</em></p>
+                            {{renderDateFormat created_at}}</em></p>
                 </div>
                 <p class="card-title">&nbsp;
                     <i id={{public_id}} onclick='deleteImage()' class="fa fa-close pull-right mr-3"></i>
@@ -33,4 +33,5 @@
             .then(location.reload())
             .catch(err => console.log(err))
     }
+
 </script>
