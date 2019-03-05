@@ -1,19 +1,19 @@
 .table tr {
-    cursor: pointer;
-  }
-  
+  cursor: pointer;
+}
+
 .fa {
-    color: black;
+  color: black;
 }
 
 .fa:hover {
-    color: red;
+  color: red;
 }
 
 .dropdown-menu-center {
-    right: auto;
-    left: 50%;
-    -webkit-transform: translate(-50%, 0);
-    -o-transform: translate(-50%, 0);
-    transform: translate(-50%, 0);
-  }
+  right: auto;
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  -o-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}

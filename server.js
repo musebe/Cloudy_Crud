@@ -19,6 +19,8 @@ app.set("view engine", "handlebars");
 
 //Static folder
 app.use(express.static(path.join(__dirname, "public")));
+//Defines where the Images are stored
+app.use(express.static("public/images"));
 
 // @route GET /
 // @desc Loads form
