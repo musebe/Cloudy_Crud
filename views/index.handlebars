@@ -28,6 +28,7 @@
         console.log(error, result)
         // Push URL into text input
         document.getElementById('url_text').value = result[0].url;
+        res.redirect("/files");
       });
   }, false);
 </script>

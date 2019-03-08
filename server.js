@@ -4,6 +4,8 @@ const expbs = require("express-handlebars");
 const bodyParser = require("body-parser");
 const upload = require("./handlers/multer");
 const cloudinary = require("cloudinary");
+const session = require("express-session");
+const flash = require("connect-flash");
 const path = require("path");
 const moment = require("moment");
 
@@ -32,7 +34,20 @@ app.set("view engine", "handlebars");
 app.use(express.static(path.join(__dirname, "public")));
 //Defines where the Images are stored
 app.use(express.static("public/images"));
-
+// Express Session Middleware
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true
+  })
+);
+// Express Messages Middleware
+app.use(require("connect-flash")());
+app.use(function(req, res, next) {
+  res.locals.messages = require("express-messages")(req, res);
+  next();
+});
 // @route GET /
 // @desc Loads form
 app.get("/", (req, res) => {
@@ -49,7 +64,8 @@ app.post("/uploads", upload.single("image"), async (req, res) => {
     tags: req.body.tags,
     moderation: "manual"
   });
-  res.redirect("/");
+  req.flash("success", "Image Added");
+  res.redirect("/files");
 });
 
 // @route GET /files
@@ -97,7 +113,7 @@ app.post("/files", upload.single("image"), async (req, res) => {
   res.send(result);
   res.json(result);
   res.redirect("/");
-  console.log(result);
+  // console.log(result);
 });
 
 // @route DELETE /files/:id
